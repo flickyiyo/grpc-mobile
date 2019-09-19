@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package imgstream;
+
+option go_package="imgstream";
+option java_package = "io.grpc.emergentes";
+option java_multiple_files = true;
+
+message ImageRequest {
+    int32 w = 1;
+    int32 h = 2;
+    string username = 3;
+}
+
+message ImageStream {
+    int32 w = 1;
+    int32 h = 2;
+    bytes image = 3;
+}
+
+message CloseStreamRequest {
+    string username = 1;
+}
+
+message CloseStreamResponse {
+    string msg = 1;
+}
+
+service ImgStreamService {
+    rpc AskToRasppi (ImageRequest) returns (stream ImageStream){};
+    rpc CloseStream (CloseStreamRequest) returns (CloseStreamResponse);
+    rpc SentFromRasppi(stream ImageStream) returns (stream ImageStream){};
+    rpc AskFromMobile (stream ImageRequest) returns (stream ImageStream){};
+    rpc SimpleCall (ImageRequest) returns (ImageRequest) {};
+}
